@@ -140,8 +140,8 @@ export default function CharacterPage() {
           </div>
         </div>
 
-        {/* Comments Section - Hidden on mobile */}
-        <div className="mt-8 hidden lg:block">
+        {/* Comments Section */}
+        <div className="mt-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Comments</h2>
           <CommentForm characterId={character.id} />
           <CommentList characterId={character.id} />
