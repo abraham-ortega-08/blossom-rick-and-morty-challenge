@@ -93,7 +93,7 @@ export default function CharacterPage() {
         <div className="mb-6 text-center lg:text-left">
           <div className="relative inline-block">
             <Avatar src={character.image} alt={character.name} size="xl" className="!w-[120px] !h-[120px] lg:!w-20 lg:!h-20" />
-            <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-sm">
+            <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-sm flex">
               <HeartIcon 
                 filled={isFav} 
                 size={24} 
