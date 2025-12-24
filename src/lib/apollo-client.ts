@@ -1,4 +1,6 @@
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloClient } from '@apollo/client/core';
+import { InMemoryCache } from '@apollo/client/cache';
+import { HttpLink } from '@apollo/client/link/http';
 
 const RICK_AND_MORTY_API = 'https://rickandmortyapi.com/graphql';
 
@@ -11,7 +13,7 @@ function createApolloClient() {
   });
 }
 
-let apolloClient: ApolloClient | null = null;
+let apolloClient: ReturnType<typeof createApolloClient> | null = null;
 
 export function getApolloClient() {
   if (!apolloClient || typeof window === 'undefined') {
@@ -21,4 +23,3 @@ export function getApolloClient() {
 }
 
 export { RICK_AND_MORTY_API };
-
