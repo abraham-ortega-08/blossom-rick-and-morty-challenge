@@ -334,12 +334,12 @@ describe('CharacterDetail', () => {
 
     render(<CharacterDetail />);
     
-    // The back button is now just an icon button with an SVG
+    // The back button now uses Iconify, so we check for the button with an icon
     const buttons = screen.getAllByRole('button');
-    // Find the button that contains the back arrow SVG
+    // Find the button that contains an icon (Iconify renders svg or has iconify class)
     const backButton = buttons.find(button => {
-      const svg = button.querySelector('svg');
-      return svg && svg.querySelector('path[d*="M19 12H5"]');
+      const icon = button.querySelector('svg') || button.querySelector('[class*="iconify"]');
+      return icon !== null && button.className.includes('text-[var(--primary-600)]');
     });
     
     expect(backButton).toBeDefined();

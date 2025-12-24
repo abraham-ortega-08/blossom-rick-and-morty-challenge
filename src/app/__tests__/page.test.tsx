@@ -11,9 +11,12 @@ describe('Home Page', () => {
   it('displays the user icon', () => {
     const { container } = render(<Home />);
     
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
-    expect(svg).toHaveClass('w-16', 'h-16');
+    // Iconify renderiza un svg o un elemento con clase iconify
+    const icon = container.querySelector('svg') || container.querySelector('[class*="iconify"]');
+    expect(icon).toBeInTheDocument();
+    // Verificar que el contenedor del icono tenga las clases correctas
+    const iconContainer = container.querySelector('.w-16.h-16');
+    expect(iconContainer).toBeInTheDocument();
   });
 
   it('has centered layout', () => {

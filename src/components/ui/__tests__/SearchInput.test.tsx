@@ -33,8 +33,9 @@ describe('SearchInput', () => {
       />
     );
     
-    const searchIcon = container.querySelector('svg');
-    expect(searchIcon).toBeInTheDocument();
+    // Iconify renderiza un svg, pero verificamos que el icono esté presente
+    const iconElement = container.querySelector('[class*="iconify"]') || container.querySelector('svg');
+    expect(iconElement).toBeInTheDocument();
   });
 
   it('allows typing in the input', () => {
