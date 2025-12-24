@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useMemo } from 'react';
+import { Icon } from '@iconify/react';
 import { FilterButton } from '@/components/ui/FilterButton';
 import { useCharacterStore } from '@/store/useCharacterStore';
 import type { CharacterFilter, SpeciesFilter, StatusFilter, GenderFilter } from '@/types/character';
@@ -86,9 +87,7 @@ export const CharacterFilters = memo(function CharacterFilters({ onApply }: Char
             onClick={() => setFilterPanelOpen(false)}
             className="p-2 -ml-2 text-[var(--primary-600)]"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+            <Icon icon="mdi:arrow-left" width={24} height={24} />
           </button>
           <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
           <div className="w-10" /> {/* Spacer for centering */}

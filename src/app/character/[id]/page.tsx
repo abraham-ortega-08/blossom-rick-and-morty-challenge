@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { Icon } from '@iconify/react';
 import { Avatar } from '@/components/ui/Avatar';
 import { HeartIcon } from '@/components/ui/HeartIcon';
 import { CommentForm } from '@/components/comments/CommentForm';
@@ -33,9 +34,7 @@ export default function CharacterPage() {
       <div className="h-full flex flex-col bg-white">
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 lg:hidden">
           <button onClick={handleBack} className="p-2 -ml-2 text-[var(--primary-600)]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+            <Icon icon="mdi:arrow-left" width={24} height={24} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 animate-pulse">
@@ -61,9 +60,7 @@ export default function CharacterPage() {
       <div className="h-full flex flex-col bg-white">
         <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100 lg:hidden">
           <button onClick={handleBack} className="p-2 -ml-2 text-[var(--primary-600)]">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+            <Icon icon="mdi:arrow-left" width={24} height={24} />
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center text-red-500">
@@ -86,9 +83,7 @@ export default function CharacterPage() {
           onClick={handleBack}
           className="p-2 -ml-2 text-[var(--primary-600)]"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
+          <Icon icon="mdi:arrow-left" width={24} height={24} />
         </button>
       </div>
 

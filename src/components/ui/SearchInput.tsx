@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { Icon } from '@iconify/react';
 
 interface SearchInputProps {
   value: string;
@@ -21,19 +22,12 @@ export const SearchInput = memo(function SearchInput({
     <div className="relative flex items-center">
       {/* Search Icon */}
       <div className="absolute left-3 pointer-events-none">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#9CA3AF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="M21 21l-4.35-4.35" />
-        </svg>
+        <Icon 
+          icon="mdi:magnify"
+          width={20}
+          height={20}
+          style={{ color: '#9CA3AF' }}
+        />
       </div>
 
       {/* Input */}
@@ -58,23 +52,11 @@ export const SearchInput = memo(function SearchInput({
         }`}
         aria-label="Toggle filters"
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="4" y1="6" x2="20" y2="6" />
-          <line x1="4" y1="12" x2="20" y2="12" />
-          <line x1="4" y1="18" x2="20" y2="18" />
-          <circle cx="8" cy="6" r="2" fill="currentColor" />
-          <circle cx="16" cy="12" r="2" fill="currentColor" />
-          <circle cx="10" cy="18" r="2" fill="currentColor" />
-        </svg>
+        <Icon 
+          icon="mdi:tune-variant"
+          width={20}
+          height={20}
+        />
       </button>
     </div>
   );
