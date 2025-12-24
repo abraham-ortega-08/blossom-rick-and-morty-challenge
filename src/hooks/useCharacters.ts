@@ -1,20 +1,23 @@
 'use client';
 
 import { useQuery } from '@apollo/client/react';
+import { NetworkStatus } from '@apollo/client/core';
 import { GET_CHARACTERS } from '@/graphql/queries';
 import { useCharacterStore } from '@/store/useCharacterStore';
 import { useDebounce } from './useDebounce';
 import type { Character, CharactersResponse } from '@/types/character';
-import { useMemo } from 'react';
+import { useMemo, useCallback, useRef, useState } from 'react';
 
 export function useCharacters(page: number = 1) {
   const { filters, favorites } = useCharacterStore();
   const debouncedSearch = useDebounce(filters.search, 300);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const currentPageRef = useRef(1);
 
   // Prepare species filter for GraphQL (only Human/Alien, not 'all')
   const speciesVariable = filters.speciesFilter === 'all' ? undefined : filters.speciesFilter;
 
-  const { data, loading, error, fetchMore } = useQuery<CharactersResponse>(GET_CHARACTERS, {
+  const { data, loading, error, fetchMore, networkStatus } = useQuery<CharactersResponse>(GET_CHARACTERS, {
     variables: {
       page,
       name: debouncedSearch || undefined,
@@ -22,6 +25,9 @@ export function useCharacters(page: number = 1) {
     },
     notifyOnNetworkStatusChange: true,
   });
+
+  // Initial loading state (not fetchMore)
+  const isInitialLoading = networkStatus === NetworkStatus.loading;
 
   // Process characters with local filters (starred/others) and sorting
   const processedCharacters = useMemo(() => {
@@ -57,20 +63,45 @@ export function useCharacters(page: number = 1) {
     return { starred, others };
   }, [data?.characters?.results, favorites, filters.sortOrder, filters.characterFilter]);
 
-  const loadMore = () => {
-    if (data?.characters?.info?.next) {
-      fetchMore({
-        variables: { page: data.characters.info.next },
-      });
+  const loadMore = useCallback(async () => {
+    const nextPage = data?.characters?.info?.next;
+    
+    // Prevent duplicate calls
+    if (!nextPage || isLoadingMore || nextPage <= currentPageRef.current) {
+      return;
     }
-  };
+    
+    currentPageRef.current = nextPage;
+    setIsLoadingMore(true);
+    
+    try {
+      await fetchMore({
+        variables: { page: nextPage },
+      });
+    } catch (err) {
+      // Reset on error so user can retry
+      currentPageRef.current = nextPage - 1;
+      console.error('Error loading more characters:', err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [data?.characters?.info?.next, fetchMore, isLoadingMore]);
+
+  // Reset page ref when filters change
+  const filterKey = `${debouncedSearch}-${speciesVariable}`;
+  const prevFilterKeyRef = useRef(filterKey);
+  if (prevFilterKeyRef.current !== filterKey) {
+    prevFilterKeyRef.current = filterKey;
+    currentPageRef.current = 1;
+  }
 
   return {
     characters: data?.characters?.results || [],
     starredCharacters: processedCharacters.starred,
     otherCharacters: processedCharacters.others,
     info: data?.characters?.info,
-    loading,
+    loading: isInitialLoading,
+    isLoadingMore,
     error,
     loadMore,
     hasMore: !!data?.characters?.info?.next,

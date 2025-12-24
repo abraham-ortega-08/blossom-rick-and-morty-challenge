@@ -1,6 +1,7 @@
 'use client';
 
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { CharacterCard } from './CharacterCard';
 import { CharacterFilters } from './CharacterFilters';
 import { SearchInput } from '@/components/ui/SearchInput';
@@ -17,7 +18,34 @@ export const CharacterList = memo(function CharacterList() {
     toggleFilterPanel,
   } = useCharacterStore();
   
-  const { starredCharacters, otherCharacters, loading, error } = useCharacters();
+  const { 
+    starredCharacters, 
+    otherCharacters, 
+    loading, 
+    isLoadingMore,
+    error,
+    loadMore,
+    hasMore,
+  } = useCharacters();
+
+  // Infinite scroll using react-intersection-observer
+  const { ref: loadMoreRef, inView } = useInView({
+    threshold: 0,
+    rootMargin: '100px',
+  });
+
+  // Track previous inView state to detect transitions
+  const prevInViewRef = useRef(false);
+
+  // Load more when trigger element becomes visible (transition from false to true)
+  useEffect(() => {
+    const justBecameVisible = inView && !prevInViewRef.current;
+    prevInViewRef.current = inView;
+
+    if (justBecameVisible && hasMore && !isLoadingMore && !loading) {
+      loadMore();
+    }
+  }, [inView, hasMore, isLoadingMore, loading, loadMore]);
 
   const handleSelect = useCallback((id: string) => {
     setSelectedCharacterId(id);
@@ -59,7 +87,7 @@ export const CharacterList = memo(function CharacterList() {
 
         {/* Results info */}
         {activeFilterCount > 0 && (
-          <div className="flex items-center gap-3 mt-4">
+          <div className="flex items-center gap-3 mt-4 justify-between">
             <span className="text-sm text-[var(--primary-600)] font-medium">
               {totalResults} Results
             </span>
@@ -130,6 +158,21 @@ export const CharacterList = memo(function CharacterList() {
                 No characters found
               </div>
             )}
+
+            {/* Infinite Scroll Trigger */}
+            <div ref={loadMoreRef} className="py-4">
+              {isLoadingMore && (
+                <div className="flex justify-center items-center gap-2">
+                  <div className="w-5 h-5 border-2 border-[var(--primary-500)] border-t-transparent rounded-full animate-spin" />
+                  <span className="text-sm text-gray-500">Loading more...</span>
+                </div>
+              )}
+              {!hasMore && totalResults > 0 && (
+                <p className="text-center text-xs text-gray-400">
+                  You have reached the end of the list
+                </p>
+              )}
+            </div>
           </>
         )}
       </div>
