@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Comment, FilterState, CharacterFilter, SpeciesFilter, SortOrder } from '@/types/character';
+import type { Comment, FilterState, CharacterFilter, SpeciesFilter, StatusFilter, GenderFilter, SortOrder } from '@/types/character';
 
 interface CharacterStore {
   // Favorites
@@ -16,6 +16,12 @@ interface CharacterStore {
   deleteComment: (characterId: string, commentId: string) => void;
   getComments: (characterId: string) => Comment[];
   
+  // Soft Delete
+  deletedCharacters: string[];
+  softDeleteCharacter: (characterId: string) => void;
+  restoreCharacter: (characterId: string) => void;
+  isDeleted: (characterId: string) => boolean;
+  
   // Selected character
   selectedCharacterId: string | null;
   setSelectedCharacterId: (id: string | null) => void;
@@ -25,6 +31,8 @@ interface CharacterStore {
   setSearch: (search: string) => void;
   setCharacterFilter: (filter: CharacterFilter) => void;
   setSpeciesFilter: (filter: SpeciesFilter) => void;
+  setStatusFilter: (filter: StatusFilter) => void;
+  setGenderFilter: (filter: GenderFilter) => void;
   setSortOrder: (order: SortOrder) => void;
   resetFilters: () => void;
   
@@ -38,6 +46,8 @@ const initialFilters: FilterState = {
   search: '',
   characterFilter: 'all',
   speciesFilter: 'all',
+  statusFilter: 'all',
+  genderFilter: 'all',
   sortOrder: 'asc',
 };
 
@@ -90,6 +100,27 @@ export const useCharacterStore = create<CharacterStore>()(
         return get().comments[characterId] || [];
       },
       
+      // Soft Delete
+      deletedCharacters: [],
+      softDeleteCharacter: (characterId: string) => {
+        set((state) => {
+          if (state.deletedCharacters.includes(characterId)) {
+            return state;
+          }
+          return {
+            deletedCharacters: [...state.deletedCharacters, characterId],
+          };
+        });
+      },
+      restoreCharacter: (characterId: string) => {
+        set((state) => ({
+          deletedCharacters: state.deletedCharacters.filter((id) => id !== characterId),
+        }));
+      },
+      isDeleted: (characterId: string) => {
+        return get().deletedCharacters.includes(characterId);
+      },
+      
       // Selected character
       selectedCharacterId: null,
       setSelectedCharacterId: (id: string | null) => {
@@ -111,6 +142,16 @@ export const useCharacterStore = create<CharacterStore>()(
       setSpeciesFilter: (speciesFilter: SpeciesFilter) => {
         set((state) => ({
           filters: { ...state.filters, speciesFilter },
+        }));
+      },
+      setStatusFilter: (statusFilter: StatusFilter) => {
+        set((state) => ({
+          filters: { ...state.filters, statusFilter },
+        }));
+      },
+      setGenderFilter: (genderFilter: GenderFilter) => {
+        set((state) => ({
+          filters: { ...state.filters, genderFilter },
         }));
       },
       setSortOrder: (sortOrder: SortOrder) => {
@@ -136,6 +177,7 @@ export const useCharacterStore = create<CharacterStore>()(
       partialize: (state) => ({
         favorites: state.favorites,
         comments: state.comments,
+        deletedCharacters: state.deletedCharacters,
       }),
     }
   )

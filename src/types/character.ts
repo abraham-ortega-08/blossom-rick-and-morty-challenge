@@ -53,12 +53,16 @@ export interface Comment {
 
 export type CharacterFilter = 'all' | 'starred' | 'others';
 export type SpeciesFilter = 'all' | 'Human' | 'Alien';
+export type StatusFilter = 'all' | 'Alive' | 'Dead' | 'unknown';
+export type GenderFilter = 'all' | 'Female' | 'Male' | 'Genderless' | 'unknown';
 export type SortOrder = 'asc' | 'desc';
 
 export interface FilterState {
   search: string;
   characterFilter: CharacterFilter;
   speciesFilter: SpeciesFilter;
+  statusFilter: StatusFilter;
+  genderFilter: GenderFilter;
   sortOrder: SortOrder;
 }
 

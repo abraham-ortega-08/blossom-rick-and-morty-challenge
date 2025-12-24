@@ -9,19 +9,23 @@ import type { Character, CharactersResponse } from '@/types/character';
 import { useMemo, useCallback, useRef, useState } from 'react';
 
 export function useCharacters(page: number = 1) {
-  const { filters, favorites } = useCharacterStore();
+  const { filters, favorites, deletedCharacters } = useCharacterStore();
   const debouncedSearch = useDebounce(filters.search, 300);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const currentPageRef = useRef(1);
 
-  // Prepare species filter for GraphQL (only Human/Alien, not 'all')
+  // Prepare filters for GraphQL (convert 'all' to undefined)
   const speciesVariable = filters.speciesFilter === 'all' ? undefined : filters.speciesFilter;
+  const statusVariable = filters.statusFilter === 'all' ? undefined : filters.statusFilter;
+  const genderVariable = filters.genderFilter === 'all' ? undefined : filters.genderFilter;
 
   const { data, loading, error, fetchMore, networkStatus } = useQuery<CharactersResponse>(GET_CHARACTERS, {
     variables: {
       page,
       name: debouncedSearch || undefined,
       species: speciesVariable,
+      status: statusVariable,
+      gender: genderVariable,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -33,7 +37,10 @@ export function useCharacters(page: number = 1) {
   const processedCharacters = useMemo(() => {
     if (!data?.characters?.results) return { starred: [], others: [] };
 
-    let characters = [...data.characters.results];
+    // Filter out deleted characters first
+    let characters = data.characters.results.filter(
+      (char) => !deletedCharacters.includes(char.id)
+    );
 
     // Sort by name
     characters.sort((a, b) => {
@@ -61,7 +68,7 @@ export function useCharacters(page: number = 1) {
     }
 
     return { starred, others };
-  }, [data?.characters?.results, favorites, filters.sortOrder, filters.characterFilter]);
+  }, [data?.characters?.results, favorites, deletedCharacters, filters.sortOrder, filters.characterFilter]);
 
   const loadMore = useCallback(async () => {
     const nextPage = data?.characters?.info?.next;
@@ -88,7 +95,7 @@ export function useCharacters(page: number = 1) {
   }, [data?.characters?.info?.next, fetchMore, isLoadingMore]);
 
   // Reset page ref when filters change
-  const filterKey = `${debouncedSearch}-${speciesVariable}`;
+  const filterKey = `${debouncedSearch}-${speciesVariable}-${statusVariable}-${genderVariable}`;
   const prevFilterKeyRef = useRef(filterKey);
   if (prevFilterKeyRef.current !== filterKey) {
     prevFilterKeyRef.current = filterKey;

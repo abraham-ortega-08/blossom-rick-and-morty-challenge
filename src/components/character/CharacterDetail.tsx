@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Avatar } from '@/components/ui/Avatar';
 import { HeartIcon } from '@/components/ui/HeartIcon';
 import { CommentForm } from '@/components/comments/CommentForm';
@@ -9,8 +9,9 @@ import { useCharacterStore } from '@/store/useCharacterStore';
 import { useCharacterDetail } from '@/hooks/useCharacterDetail';
 
 export const CharacterDetail = memo(function CharacterDetail() {
-  const { selectedCharacterId, isFavorite, toggleFavorite, setSelectedCharacterId } = useCharacterStore();
+  const { selectedCharacterId, isFavorite, toggleFavorite, setSelectedCharacterId, softDeleteCharacter } = useCharacterStore();
   const { character, loading, error } = useCharacterDetail(selectedCharacterId);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!selectedCharacterId) {
     return (
@@ -56,6 +57,20 @@ export const CharacterDetail = memo(function CharacterDetail() {
     setSelectedCharacterId(null);
   };
 
+  const handleDeleteClick = useCallback(() => {
+    setShowDeleteConfirm(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    softDeleteCharacter(character.id);
+    setShowDeleteConfirm(false);
+    setSelectedCharacterId(null);
+  }, [character.id, softDeleteCharacter, setSelectedCharacterId]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
+
   return (
     <div className="p-6 h-full overflow-y-auto">
       {/* Back Button - Solo visible en móviles */}
@@ -85,6 +100,51 @@ export const CharacterDetail = memo(function CharacterDetail() {
         <h2 className="text-2xl font-bold text-gray-900 mt-4">
           {character.name}
         </h2>
+
+        {/* Delete Button */}
+        {showDeleteConfirm ? (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm font-medium text-gray-900 mb-3">
+              Are you sure you want to delete this character?
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={handleDeleteClick}
+            className="mt-4 flex items-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+            Delete Character
+          </button>
+        )}
       </div>
 
       {/* Character Properties */}
