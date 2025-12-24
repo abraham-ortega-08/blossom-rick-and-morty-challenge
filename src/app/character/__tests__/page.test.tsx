@@ -9,10 +9,22 @@ import type { Character } from '@/types/character';
 jest.mock('@/hooks/useCharacterDetail');
 jest.mock('next/navigation', () => ({
   useParams: jest.fn(),
+  useRouter: jest.fn(),
 }));
 
 const mockUseCharacterDetail = useCharacterDetail as jest.MockedFunction<typeof useCharacterDetail>;
 const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
+
+// Mock del router
+const mockPush = jest.fn();
+const mockRouter = {
+  push: mockPush,
+  back: jest.fn(),
+  forward: jest.fn(),
+  refresh: jest.fn(),
+  replace: jest.fn(),
+  prefetch: jest.fn(),
+};
 
 const mockCharacter: Character = {
   id: '1',
@@ -57,6 +69,10 @@ describe('CharacterPage', () => {
 
     // Mock useParams por defecto
     mockUseParams.mockReturnValue({ id: '1' });
+
+    // Mock useRouter
+    const { useRouter } = require('next/navigation');
+    useRouter.mockReturnValue(mockRouter);
 
     // Mock useCharacterDetail por defecto
     mockUseCharacterDetail.mockReturnValue({

@@ -80,26 +80,26 @@ export const CharacterCard = memo(function CharacterCard({
       onClick={handleClick}
       className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left cursor-pointer block
         ${isSelected 
-          ? 'bg-[var(--primary-100)] border-l-4 border-l-[var(--primary-600)]' 
+          ? 'bg-[var(--primary-100)]' 
           : 'hover:bg-gray-50'
         }`}
     >
       <Avatar src={character.image} alt={character.name} size="md" />
       
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-gray-900 truncate">{character.name}</p>
-        <p className="text-sm text-gray-400">{character.species}</p>
+        <p className="font-semibold text-base text-gray-900 truncate">{character.name}</p>
+        <p className="text-sm text-gray-500">{character.species}</p>
       </div>
 
       <div className="flex items-center gap-2">
         <HeartIcon 
           filled={isFav} 
-          size={22} 
+          size={24} 
           onClick={handleFavoriteClick}
         />
         <button
           onClick={handleDeleteClick}
-          className="p-1 hover:bg-red-50 rounded transition-colors"
+          className="p-1 hover:bg-red-50 rounded transition-colors lg:block hidden"
           title="Delete character"
         >
           <svg

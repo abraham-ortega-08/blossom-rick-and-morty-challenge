@@ -1,4 +1,16 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useCharacterStore } from '@/store/useCharacterStore';
+
 export default function Home() {
+  const setSelectedCharacterId = useCharacterStore((state) => state.setSelectedCharacterId);
+
+  useEffect(() => {
+    // Limpiar el personaje seleccionado cuando se carga la página principal
+    setSelectedCharacterId(null);
+  }, [setSelectedCharacterId]);
+
   return (
     <div className="flex items-center justify-center h-full text-gray-400">
       <div className="text-center">

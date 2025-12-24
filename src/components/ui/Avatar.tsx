@@ -6,7 +6,7 @@ import { memo } from 'react';
 interface AvatarProps {
   src: string;
   alt: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
@@ -14,6 +14,7 @@ const sizeMap = {
   sm: 40,
   md: 48,
   lg: 80,
+  xl: 120,
 };
 
 export const Avatar = memo(function Avatar({ 
@@ -24,10 +25,16 @@ export const Avatar = memo(function Avatar({
 }: AvatarProps) {
   const pixelSize = sizeMap[size];
   
+  const sizeClasses = {
+    sm: 'w-10 h-10',
+    md: 'w-12 h-12',
+    lg: 'w-20 h-20',
+    xl: 'w-[120px] h-[120px]',
+  };
+  
   return (
     <div 
-      className={`relative overflow-hidden rounded-full flex-shrink-0 ${className}`}
-      style={{ width: pixelSize, height: pixelSize }}
+      className={`relative overflow-hidden rounded-full flex-shrink-0 ${sizeClasses[size]} ${className}`}
     >
       <Image
         src={src}
@@ -35,7 +42,7 @@ export const Avatar = memo(function Avatar({
         fill
         sizes={`${pixelSize}px`}
         className="object-cover"
-        priority={size === 'lg'}
+        priority={size === 'lg' || size === 'xl'}
       />
     </div>
   );

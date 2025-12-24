@@ -71,8 +71,8 @@ export const CharacterList = memo(function CharacterList() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-6 pb-4 border-b border-gray-100">
-        <h1 className="text-xl font-bold text-gray-900 mb-5">Rick and Morty list</h1>
+      <div className="px-4 py-5 lg:px-6 lg:py-6 border-b border-gray-100">
+        <h1 className="text-2xl lg:text-xl font-bold text-gray-900 mb-4 lg:mb-5">Rick and Morty list</h1>
         
         {/* Search Input */}
         <SearchInput
@@ -85,13 +85,13 @@ export const CharacterList = memo(function CharacterList() {
         {/* Filters Panel */}
         <CharacterFilters />
 
-        {/* Results info */}
+        {/* Results info - Shown when filters are active */}
         {activeFilterCount > 0 && (
           <div className="flex items-center gap-3 mt-4 justify-between">
-            <span className="text-sm text-[var(--primary-600)] font-medium">
-              {totalResults} Results
+            <span className="text-sm text-[var(--primary-600)] font-semibold">
+              {totalResults} Result{totalResults !== 1 ? 's' : ''}
             </span>
-            <span className="text-xs bg-[var(--primary-100)] text-[var(--primary-600)] px-3 py-1 rounded-full font-medium">
+            <span className="text-xs bg-[var(--primary-100)] text-[var(--primary-600)] px-3 py-1.5 rounded-full font-medium">
               {activeFilterCount} Filter{activeFilterCount > 1 ? 's' : ''}
             </span>
           </div>
@@ -99,7 +99,7 @@ export const CharacterList = memo(function CharacterList() {
       </div>
 
       {/* Character Lists */}
-      <div className="flex-1 overflow-y-auto p-6 pt-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 lg:px-6 lg:py-4">
         {loading ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
@@ -117,10 +117,10 @@ export const CharacterList = memo(function CharacterList() {
             {/* Starred Characters Section */}
             {starredCharacters.length > 0 && (
               <div className="mb-6">
-                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-1">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                   Starred Characters ({starredCharacters.length})
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {starredCharacters.map((character) => (
                     <CharacterCard
                       key={character.id}
@@ -136,10 +136,10 @@ export const CharacterList = memo(function CharacterList() {
             {/* Other Characters Section */}
             {otherCharacters.length > 0 && (
               <div>
-                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-1">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                   Characters ({otherCharacters.length})
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {otherCharacters.map((character) => (
                     <CharacterCard
                       key={character.id}
@@ -154,7 +154,7 @@ export const CharacterList = memo(function CharacterList() {
 
             {/* Empty State */}
             {starredCharacters.length === 0 && otherCharacters.length === 0 && (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-12 text-gray-400">
                 No characters found
               </div>
             )}
