@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ApolloProvider } from "@/providers/ApolloProvider";
+import { CharacterList } from "@/components/character/CharacterList";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,20 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ApolloProvider>
-          {children}
+          <div className="h-screen w-screen bg-[var(--gray-100)] overflow-hidden">
+            {/* Main Content Grid */}
+            <main className="h-full grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-[1px] bg-gray-200">
+              {/* Left Panel - Character List (Always visible) */}
+              <section className="bg-white overflow-hidden flex flex-col min-h-0">
+                <CharacterList />
+              </section>
+
+              {/* Right Panel - Dynamic Content (children) */}
+              <section className="bg-white overflow-hidden flex flex-col min-h-0">
+                {children}
+              </section>
+            </main>
+          </div>
         </ApolloProvider>
       </body>
     </html>

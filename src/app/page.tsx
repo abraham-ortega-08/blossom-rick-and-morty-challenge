@@ -1,23 +1,22 @@
-'use client';
-
-import { CharacterList } from '@/components/character/CharacterList';
-import { CharacterDetail } from '@/components/character/CharacterDetail';
-
 export default function Home() {
   return (
-    <div className="h-screen w-screen bg-[var(--gray-100)] overflow-hidden">
-      {/* Main Content Grid */}
-      <main className="h-full grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-[1px] bg-gray-200">
-        {/* Left Panel - Character List */}
-        <section className="bg-white overflow-hidden flex flex-col min-h-0">
-          <CharacterList />
-        </section>
-
-        {/* Right Panel - Character Detail */}
-        <section className="bg-white overflow-hidden hidden lg:flex lg:flex-col min-h-0">
-          <CharacterDetail />
-        </section>
-      </main>
+    <div className="flex items-center justify-center h-full text-gray-400">
+      <div className="text-center">
+        <svg 
+          className="w-16 h-16 mx-auto mb-4 text-gray-300" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+          />
+        </svg>
+        <p className="text-lg">Select a character to see details</p>
+      </div>
     </div>
   );
 }

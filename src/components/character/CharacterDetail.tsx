@@ -9,7 +9,7 @@ import { useCharacterStore } from '@/store/useCharacterStore';
 import { useCharacterDetail } from '@/hooks/useCharacterDetail';
 
 export const CharacterDetail = memo(function CharacterDetail() {
-  const { selectedCharacterId, isFavorite, toggleFavorite } = useCharacterStore();
+  const { selectedCharacterId, isFavorite, toggleFavorite, setSelectedCharacterId } = useCharacterStore();
   const { character, loading, error } = useCharacterDetail(selectedCharacterId);
 
   if (!selectedCharacterId) {
@@ -52,8 +52,23 @@ export const CharacterDetail = memo(function CharacterDetail() {
 
   const isFav = isFavorite(character.id);
 
+  const handleBack = () => {
+    setSelectedCharacterId(null);
+  };
+
   return (
     <div className="p-6 h-full overflow-y-auto">
+      {/* Back Button - Solo visible en móviles */}
+      <button
+        onClick={handleBack}
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 lg:hidden"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Back to list
+      </button>
+
       {/* Character Header */}
       <div className="mb-6">
         <div className="relative inline-block">

@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useCallback } from 'react';
+import Link from 'next/link';
 import { Avatar } from '@/components/ui/Avatar';
 import { HeartIcon } from '@/components/ui/HeartIcon';
 import { useCharacterStore } from '@/store/useCharacterStore';
@@ -22,25 +23,19 @@ export const CharacterCard = memo(function CharacterCard({
 
   const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     toggleFavorite(character.id);
   }, [character.id, toggleFavorite]);
 
-  const handleSelect = useCallback(() => {
+  const handleClick = useCallback(() => {
     onSelect(character.id);
   }, [character.id, onSelect]);
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={handleSelect}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleSelect();
-        }
-      }}
-      className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left cursor-pointer
+    <Link
+      href={`/character/${character.id}`}
+      onClick={handleClick}
+      className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left cursor-pointer block
         ${isSelected 
           ? 'bg-[var(--primary-100)] border-l-4 border-l-[var(--primary-600)]' 
           : 'hover:bg-gray-50'
@@ -58,7 +53,7 @@ export const CharacterCard = memo(function CharacterCard({
         size={22} 
         onClick={handleFavoriteClick}
       />
-    </div>
+    </Link>
   );
 });
 
