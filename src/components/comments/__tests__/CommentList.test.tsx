@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@/__tests__/test-utils';
+import { render, screen, fireEvent, act } from '@/__tests__/test-utils';
 import { CommentList } from '../CommentList';
 import { useCharacterStore } from '@/store/useCharacterStore';
 
@@ -9,12 +9,14 @@ describe('CommentList', () => {
     jest.clearAllMocks();
     localStorage.clear();
     // Resetear el store de Zustand
-    const { getState, setState } = useCharacterStore;
-    setState({
-      ...getState(),
-      comments: {},
-      favorites: [],
-      deletedCharacters: [],
+    act(() => {
+      const { getState, setState } = useCharacterStore;
+      setState({
+        ...getState(),
+        comments: {},
+        favorites: [],
+        deletedCharacters: [],
+      });
     });
   });
 
@@ -24,9 +26,11 @@ describe('CommentList', () => {
   });
 
   it('renders comment list correctly', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment(characterId, 'First comment');
-    addComment(characterId, 'Second comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'First comment');
+      addComment(characterId, 'Second comment');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -35,8 +39,10 @@ describe('CommentList', () => {
   });
 
   it('shows delete button for each comment', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment(characterId, 'Test comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'Test comment');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -45,8 +51,10 @@ describe('CommentList', () => {
   });
 
   it('delete comment works correctly', () => {
-    const { addComment, getComments } = useCharacterStore.getState();
-    addComment(characterId, 'Comment to delete');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'Comment to delete');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -57,15 +65,17 @@ describe('CommentList', () => {
     fireEvent.click(deleteButton);
 
     // Verify that the comment was deleted
-    const comments = getComments(characterId);
+    const comments = useCharacterStore.getState().getComments(characterId);
     expect(comments.length).toBe(0);
   });
 
   it('deletes only the correct comment when there are multiple', () => {
-    const { addComment, getComments } = useCharacterStore.getState();
-    addComment(characterId, 'First comment');
-    addComment(characterId, 'Second comment');
-    addComment(characterId, 'Third comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'First comment');
+      addComment(characterId, 'Second comment');
+      addComment(characterId, 'Third comment');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -75,17 +85,19 @@ describe('CommentList', () => {
     // Delete the second comment (index 1)
     fireEvent.click(deleteButtons[1]);
 
-    const comments = getComments(characterId);
+    const comments = useCharacterStore.getState().getComments(characterId);
     expect(comments.length).toBe(2);
     expect(comments[0].text).toBe('First comment');
     expect(comments[1].text).toBe('Third comment');
   });
 
   it('shows comments in creation order', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment(characterId, 'First');
-    addComment(characterId, 'Second');
-    addComment(characterId, 'Third');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'First');
+      addComment(characterId, 'Second');
+      addComment(characterId, 'Third');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -96,9 +108,11 @@ describe('CommentList', () => {
   });
 
   it('does not show comments from other characters', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment('1', 'Comment for character 1');
-    addComment('2', 'Comment for character 2');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment('1', 'Comment for character 1');
+      addComment('2', 'Comment for character 2');
+    });
 
     render(<CommentList characterId="1" />);
 
@@ -107,12 +121,14 @@ describe('CommentList', () => {
   });
 
   it('updates the list when a new comment is added', () => {
-    const { addComment } = useCharacterStore.getState();
-    
     const { rerender } = render(<CommentList characterId={characterId} />);
     expect(screen.getByText('No comments yet. Be the first to comment!')).toBeInTheDocument();
 
-    addComment(characterId, 'New comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'New comment');
+    });
+    
     rerender(<CommentList characterId={characterId} />);
 
     expect(screen.queryByText('No comments yet. Be the first to comment!')).not.toBeInTheDocument();
@@ -120,8 +136,10 @@ describe('CommentList', () => {
   });
 
   it('each comment shows date information', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment(characterId, 'Test comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'Test comment');
+    });
 
     render(<CommentList characterId={characterId} />);
 
@@ -131,8 +149,10 @@ describe('CommentList', () => {
   });
 
   it('handles deletion of the last comment correctly', () => {
-    const { addComment } = useCharacterStore.getState();
-    addComment(characterId, 'Only comment');
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      addComment(characterId, 'Only comment');
+    });
 
     const { rerender } = render(<CommentList characterId={characterId} />);
     
@@ -147,12 +167,14 @@ describe('CommentList', () => {
   });
 
   it('renders multiple comments without errors', () => {
-    const { addComment } = useCharacterStore.getState();
-    
-    // Add many comments
-    for (let i = 1; i <= 10; i++) {
-      addComment(characterId, `Comment ${i}`);
-    }
+    act(() => {
+      const { addComment } = useCharacterStore.getState();
+      
+      // Add many comments
+      for (let i = 1; i <= 10; i++) {
+        addComment(characterId, `Comment ${i}`);
+      }
+    });
 
     render(<CommentList characterId={characterId} />);
 

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@/__tests__/test-utils';
+import { render, screen, fireEvent, act } from '@/__tests__/test-utils';
 import { CharacterFilters } from '../CharacterFilters';
 import { useCharacterStore } from '@/store/useCharacterStore';
 
@@ -7,21 +7,23 @@ describe('CharacterFilters', () => {
     jest.clearAllMocks();
     localStorage.clear();
     // Resetear el store de Zustand
-    const { getState, setState } = useCharacterStore;
-    setState({
-      ...getState(),
-      comments: {},
-      favorites: [],
-      deletedCharacters: [],
-      filters: {
-        search: '',
-        characterFilter: 'all',
-        speciesFilter: 'all',
-        statusFilter: 'all',
-        genderFilter: 'all',
-        sortOrder: 'asc',
-      },
-      isFilterPanelOpen: false,
+    act(() => {
+      const { getState, setState } = useCharacterStore;
+      setState({
+        ...getState(),
+        comments: {},
+        favorites: [],
+        deletedCharacters: [],
+        filters: {
+          search: '',
+          characterFilter: 'all',
+          speciesFilter: 'all',
+          statusFilter: 'all',
+          genderFilter: 'all',
+          sortOrder: 'asc',
+        },
+        isFilterPanelOpen: false,
+      });
     });
   });
 
@@ -31,8 +33,10 @@ describe('CharacterFilters', () => {
   });
 
   it('renders all filters when panel is open', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -43,8 +47,10 @@ describe('CharacterFilters', () => {
   });
 
   it('shows all Character options', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -57,8 +63,10 @@ describe('CharacterFilters', () => {
   });
 
   it('shows all Species options', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -67,8 +75,10 @@ describe('CharacterFilters', () => {
   });
 
   it('shows all Status options', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -78,8 +88,10 @@ describe('CharacterFilters', () => {
   });
 
   it('shows all Gender options', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -89,8 +101,10 @@ describe('CharacterFilters', () => {
   });
 
   it('changing Character filter updates the store', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -102,8 +116,10 @@ describe('CharacterFilters', () => {
   });
 
   it('changing Species filter updates the store', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -115,8 +131,10 @@ describe('CharacterFilters', () => {
   });
 
   it('changing Status filter updates the store', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -128,8 +146,10 @@ describe('CharacterFilters', () => {
   });
 
   it('changing Gender filter updates the store', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -141,8 +161,10 @@ describe('CharacterFilters', () => {
   });
 
   it('Filter button is disabled when no filters are active', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -151,9 +173,11 @@ describe('CharacterFilters', () => {
   });
 
   it('Filter button is enabled when filters are active', () => {
-    const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
-    setCharacterFilter('starred');
+    act(() => {
+      const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+      setCharacterFilter('starred');
+    });
 
     render(<CharacterFilters />);
 
@@ -162,9 +186,11 @@ describe('CharacterFilters', () => {
   });
 
   it('applying filters closes the panel', () => {
-    const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
-    setCharacterFilter('starred');
+    act(() => {
+      const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+      setCharacterFilter('starred');
+    });
 
     render(<CharacterFilters />);
 
@@ -177,8 +203,11 @@ describe('CharacterFilters', () => {
 
   it('calls onApply when filters are applied', () => {
     const mockOnApply = jest.fn();
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters onApply={mockOnApply} />);
 
@@ -189,8 +218,10 @@ describe('CharacterFilters', () => {
   });
 
   it('multiple filters can be active at the same time', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -208,9 +239,11 @@ describe('CharacterFilters', () => {
   });
 
   it('shows Clear button when filters are active', () => {
-    const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
-    setCharacterFilter('starred');
+    act(() => {
+      const { setFilterPanelOpen, setCharacterFilter } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+      setCharacterFilter('starred');
+    });
 
     render(<CharacterFilters />);
 
@@ -218,8 +251,10 @@ describe('CharacterFilters', () => {
   });
 
   it('does not show Clear button when no filters are active', () => {
-    const { setFilterPanelOpen } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
+    act(() => {
+      const { setFilterPanelOpen } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+    });
 
     render(<CharacterFilters />);
 
@@ -227,14 +262,16 @@ describe('CharacterFilters', () => {
   });
 
   it('Clear button resets all filters', () => {
-    const { setFilterPanelOpen, setCharacterFilter, setSpeciesFilter, setStatusFilter, setGenderFilter } = useCharacterStore.getState();
-    setFilterPanelOpen(true);
-    
-    // Set multiple filters
-    setCharacterFilter('starred');
-    setSpeciesFilter('Human');
-    setStatusFilter('Alive');
-    setGenderFilter('Female');
+    act(() => {
+      const { setFilterPanelOpen, setCharacterFilter, setSpeciesFilter, setStatusFilter, setGenderFilter } = useCharacterStore.getState();
+      setFilterPanelOpen(true);
+      
+      // Set multiple filters
+      setCharacterFilter('starred');
+      setSpeciesFilter('Human');
+      setStatusFilter('Alive');
+      setGenderFilter('Female');
+    });
 
     render(<CharacterFilters />);
 

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@/__tests__/test-utils';
+import { render, screen, fireEvent, waitFor, act } from '@/__tests__/test-utils';
 import { CharacterCard } from '../CharacterCard';
 import { useCharacterStore } from '@/store/useCharacterStore';
 import type { Character } from '@/types/character';
@@ -34,12 +34,14 @@ describe('CharacterCard', () => {
     jest.clearAllMocks();
     localStorage.clear();
     // Resetear el store de Zustand
-    const { getState, setState } = useCharacterStore;
-    setState({
-      ...getState(),
-      comments: {},
-      favorites: [],
-      deletedCharacters: [],
+    act(() => {
+      const { getState, setState } = useCharacterStore;
+      setState({
+        ...getState(),
+        comments: {},
+        favorites: [],
+        deletedCharacters: [],
+      });
     });
   });
 

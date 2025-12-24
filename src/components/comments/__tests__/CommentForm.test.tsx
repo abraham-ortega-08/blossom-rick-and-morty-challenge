@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@/__tests__/test-utils';
+import { render, screen, fireEvent, waitFor, act } from '@/__tests__/test-utils';
 import { CommentForm } from '../CommentForm';
 import { useCharacterStore } from '@/store/useCharacterStore';
 
@@ -9,12 +9,14 @@ describe('CommentForm', () => {
     jest.clearAllMocks();
     localStorage.clear();
     // Resetear el store de Zustand
-    const { getState, setState } = useCharacterStore;
-    setState({
-      ...getState(),
-      comments: {},
-      favorites: [],
-      deletedCharacters: [],
+    act(() => {
+      const { getState, setState } = useCharacterStore;
+      setState({
+        ...getState(),
+        comments: {},
+        favorites: [],
+        deletedCharacters: [],
+      });
     });
   });
 
