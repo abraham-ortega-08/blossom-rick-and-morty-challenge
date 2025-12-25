@@ -180,10 +180,12 @@ export const CharacterDetail = memo(function CharacterDetail() {
           </div>
         </div>
 
-        {/* Comments Section - Hidden on mobile in reference design */}
-        <div className="mt-8 hidden lg:block">
+        {/* Comments Section */}
+        <div className="mt-8 pb-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Comments</h3>
-          <CommentForm characterId={character.id} />
+          <div className="mb-4">
+            <CommentForm characterId={character.id} />
+          </div>
           <CommentList characterId={character.id} />
         </div>
       </div>

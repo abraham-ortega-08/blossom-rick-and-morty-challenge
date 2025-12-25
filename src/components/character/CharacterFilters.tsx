@@ -125,8 +125,8 @@ export const CharacterFilters = memo(function CharacterFilters({ onApply }: Char
             </div>
           </div>
 
-          {/* Status Section - Hidden on mobile in reference design */}
-          <div className="mb-6 hidden lg:block">
+          {/* Status Section */}
+          <div className="mb-6">
             <p className="text-sm text-gray-500 mb-3">Status</p>
             <div className="flex gap-2 flex-wrap">
               {statusOptions.map((option) => (
@@ -140,8 +140,8 @@ export const CharacterFilters = memo(function CharacterFilters({ onApply }: Char
             </div>
           </div>
 
-          {/* Gender Section - Hidden on mobile in reference design */}
-          <div className="mb-6 hidden lg:block">
+          {/* Gender Section */}
+          <div className="mb-6">
             <p className="text-sm text-gray-500 mb-3">Gender</p>
             <div className="flex gap-2 flex-wrap">
               {genderOptions.map((option) => (

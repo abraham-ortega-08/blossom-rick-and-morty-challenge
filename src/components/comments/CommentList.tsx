@@ -29,11 +29,11 @@ export const CommentList = memo(function CommentList({ characterId }: CommentLis
       {comments.map((comment) => (
         <div
           key={comment.id}
-          className="flex items-start justify-between gap-2 p-3 bg-gray-50 rounded-lg"
+          className="flex items-start justify-between gap-3 p-4 bg-gray-50 rounded-lg"
         >
-          <div className="flex-1">
-            <p className="text-sm text-gray-700">{comment.text}</p>
-            <p className="text-xs text-gray-400 mt-1">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-gray-700 break-words whitespace-pre-wrap">{comment.text}</p>
+            <p className="text-xs text-gray-400 mt-2">
               {new Date(comment.createdAt).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -46,13 +46,13 @@ export const CommentList = memo(function CommentList({ characterId }: CommentLis
           <button
             type="button"
             onClick={() => handleDelete(comment.id)}
-            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+            className="text-gray-400 hover:text-red-500 transition-colors p-1 flex-shrink-0"
             aria-label="Delete comment"
           >
             <Icon 
               icon="mdi:delete-outline"
-              width={16}
-              height={16}
+              width={18}
+              height={18}
             />
           </button>
         </div>
