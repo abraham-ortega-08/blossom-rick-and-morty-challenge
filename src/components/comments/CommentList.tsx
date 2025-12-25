@@ -24,9 +24,14 @@ export const CommentList = memo(function CommentList({ characterId }: CommentLis
     );
   }
 
+  // Sort comments by date: most recent first
+  const sortedComments = [...comments].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   return (
     <div className="space-y-3">
-      {comments.map((comment) => (
+      {sortedComments.map((comment) => (
         <div
           key={comment.id}
           className="flex items-start justify-between gap-3 p-4 bg-gray-50 rounded-lg"

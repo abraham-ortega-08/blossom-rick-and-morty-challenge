@@ -1,20 +1,37 @@
 'use client';
 
-import { memo, useState, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Icon } from '@iconify/react';
 import { Avatar } from '@/components/ui/Avatar';
-import { HeartIcon } from '@/components/ui/HeartIcon';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { CommentList } from '@/components/comments/CommentList';
 import { useCharacterStore } from '@/store/useCharacterStore';
 import { useCharacterDetail } from '@/hooks/useCharacterDetail';
 
-export const CharacterDetail = memo(function CharacterDetail() {
-  const { selectedCharacterId, isFavorite, toggleFavorite, setSelectedCharacterId, softDeleteCharacter } = useCharacterStore();
-  const { character, loading, error } = useCharacterDetail(selectedCharacterId);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+interface CharacterDetailProps {
+  characterId?: string | null;
+  onBack?: () => void;
+}
 
-  if (!selectedCharacterId) {
+export const CharacterDetail = memo(function CharacterDetail({ characterId: propCharacterId, onBack }: CharacterDetailProps = {}) {
+  const { selectedCharacterId, isFavorite, toggleFavorite, setSelectedCharacterId } = useCharacterStore();
+  
+  // Use prop characterId if provided, otherwise use store's selectedCharacterId
+  const characterId = propCharacterId ?? selectedCharacterId;
+  const { character, loading, error } = useCharacterDetail(characterId);
+
+  // All hooks must be called before any conditional returns
+  const handleBack = useCallback(() => {
+    if (onBack) {
+      onBack();
+    } else {
+      setSelectedCharacterId(null);
+      // En móvil, esto causará que el layout muestre la lista nuevamente
+    }
+  }, [onBack, setSelectedCharacterId]);
+
+  // Conditional returns after all hooks
+  if (!characterId) {
     return (
       <div className="flex items-center justify-center h-full text-gray-400">
         Select a character to see details
@@ -54,25 +71,6 @@ export const CharacterDetail = memo(function CharacterDetail() {
 
   const isFav = isFavorite(character.id);
 
-  const handleBack = () => {
-    setSelectedCharacterId(null);
-    // En móvil, esto causará que el layout muestre la lista nuevamente
-  };
-
-  const handleDeleteClick = useCallback(() => {
-    setShowDeleteConfirm(true);
-  }, []);
-
-  const handleConfirmDelete = useCallback(() => {
-    softDeleteCharacter(character.id);
-    setShowDeleteConfirm(false);
-    setSelectedCharacterId(null);
-  }, [character.id, softDeleteCharacter, setSelectedCharacterId]);
-
-  const handleCancelDelete = useCallback(() => {
-    setShowDeleteConfirm(false);
-  }, []);
-
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Mobile Header with Back Button */}
@@ -94,15 +92,14 @@ export const CharacterDetail = memo(function CharacterDetail() {
             <button
               type="button"
               onClick={() => toggleFavorite(character.id)}
-              className="absolute bottom-2 right-2 min-w-[48px] min-h-[48px] w-12 h-12 max-w-[48px] max-h-[48px] bg-white rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 focus:outline-none shrink-0"
+              className="absolute -bottom-1 -right-1 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center transition-transform hover:scale-110 focus:outline-none"
               aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
             >
               <Icon 
                 icon={isFav ? "mdi:heart" : "mdi:heart-outline"}
-                width={20}
-                height={20}
+                width={24}
+                height={24}
                 style={{ color: isFav ? '#63D838' : '#9CA3AF' }}
-                className="shrink-0"
               />
             </button>
           </div>
@@ -110,71 +107,36 @@ export const CharacterDetail = memo(function CharacterDetail() {
           <h2 className="text-2xl font-bold text-gray-900 mt-4">
             {character.name}
           </h2>
-
-        {/* Delete Button - Hidden on mobile in reference design */}
-        {showDeleteConfirm ? (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg hidden lg:block">
-            <p className="text-sm font-medium text-gray-900 mb-3">
-              Are you sure you want to delete this character?
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-              >
-                Delete
-              </button>
-              <button
-                onClick={handleCancelDelete}
-                className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={handleDeleteClick}
-            className="mt-4 items-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors hidden lg:flex"
-          >
-            <Icon 
-              icon="mdi:delete-outline"
-              width={16}
-              height={16}
-            />
-            Delete Character
-          </button>
-        )}
         </div>
 
         {/* Character Properties */}
-        <div className="space-y-4 mb-8">
-          <div className="pb-4">
+        <div className="mb-8">
+          <div className="pb-4 border-b border-gray-300">
             <p className="text-sm font-semibold text-gray-500 mb-1">Specie</p>
             <p className="text-base text-gray-900">{character.species}</p>
           </div>
 
-          <div className="pb-4">
+          <div className="pt-4 pb-4 border-b border-gray-300">
             <p className="text-sm font-semibold text-gray-500 mb-1">Status</p>
             <p className="text-base text-gray-900">{character.status}</p>
           </div>
 
-          <div className="pb-4">
+          <div className="pt-4 pb-4 border-b border-gray-300">
             <p className="text-sm font-semibold text-gray-500 mb-1">Occupation</p>
             <p className="text-base text-gray-900">{character.type || 'Unknown'}</p>
           </div>
 
-          <div className="pb-4 lg:block hidden">
+          <div className="pt-4 pb-4 border-b border-gray-300 lg:block hidden">
             <p className="text-sm font-semibold text-gray-500 mb-1">Gender</p>
             <p className="text-base text-gray-900">{character.gender}</p>
           </div>
 
-          <div className="pb-4 lg:block hidden">
+          <div className="pt-4 pb-4 border-b border-gray-300 lg:block hidden">
             <p className="text-sm font-semibold text-gray-500 mb-1">Origin</p>
             <p className="text-base text-gray-900">{character.origin?.name || 'Unknown'}</p>
           </div>
 
-          <div className="pb-4 lg:block hidden">
+          <div className="pt-4 pb-4 lg:block hidden">
             <p className="text-sm font-semibold text-gray-500 mb-1">Location</p>
             <p className="text-base text-gray-900">{character.location?.name || 'Unknown'}</p>
           </div>
