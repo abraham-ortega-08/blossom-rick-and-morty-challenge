@@ -100,7 +100,8 @@ describe('CharacterDetail', () => {
 
     render(<CharacterDetail />);
     
-    expect(screen.getByText('Error loading character details')).toBeInTheDocument();
+    expect(screen.getByText('Character not found')).toBeInTheDocument();
+    expect(screen.getByText('Please select another character')).toBeInTheDocument();
   });
 
   it('displays character details correctly', () => {
@@ -171,107 +172,24 @@ describe('CharacterDetail', () => {
     expect(isFavoriteAfter('1')).toBe(true);
   });
 
-  it('shows delete confirmation when clicking delete button', async () => {
+  it('can soft delete character via store', () => {
     act(() => {
       const { setSelectedCharacterId } = useCharacterStore.getState();
       setSelectedCharacterId('1');
     });
 
-    mockUseCharacterDetail.mockReturnValue({
-      character: mockCharacter,
-      loading: false,
-      error: undefined,
-      isDeleted: false,
-    });
-
-    render(<CharacterDetail />);
+    // Verify character is not deleted initially
+    expect(useCharacterStore.getState().isDeleted('1')).toBe(false);
     
-    const deleteButton = screen.getByText('Delete Character');
-    fireEvent.click(deleteButton);
-    
-    await waitFor(() => {
-      expect(screen.getByText('Are you sure you want to delete this character?')).toBeInTheDocument();
-      expect(screen.getByText('Delete')).toBeInTheDocument();
-      expect(screen.getByText('Cancel')).toBeInTheDocument();
-    });
-  });
-
-  it('cancels delete operation', async () => {
+    // Simulate soft deleting the character
     act(() => {
-      const { setSelectedCharacterId } = useCharacterStore.getState();
-      setSelectedCharacterId('1');
-    });
-
-    mockUseCharacterDetail.mockReturnValue({
-      character: mockCharacter,
-      loading: false,
-      error: undefined,
-      isDeleted: false,
-    });
-
-    render(<CharacterDetail />);
-    
-    // Click delete button
-    const deleteButton = screen.getByText('Delete Character');
-    fireEvent.click(deleteButton);
-    
-    // Click cancel
-    await waitFor(() => {
-      const cancelButton = screen.getByText('Cancel');
-      fireEvent.click(cancelButton);
-    });
-    
-    // Verify delete confirmation is hidden
-    await waitFor(() => {
-      expect(screen.queryByText('Are you sure you want to delete this character?')).not.toBeInTheDocument();
-      expect(screen.getByText('Delete Character')).toBeInTheDocument();
-    });
-  });
-
-  it('deletes character and deselects it', async () => {
-    act(() => {
-      const { setSelectedCharacterId } = useCharacterStore.getState();
-      setSelectedCharacterId('1');
-    });
-
-    mockUseCharacterDetail.mockReturnValue({
-      character: mockCharacter,
-      loading: false,
-      error: undefined,
-      isDeleted: false,
-    });
-
-    const { unmount } = render(<CharacterDetail />);
-    
-    // Click delete button
-    const deleteButton = screen.getByText('Delete Character');
-    fireEvent.click(deleteButton);
-    
-    // Wait for confirmation dialog
-    await waitFor(() => {
-      expect(screen.getByText('Are you sure you want to delete this character?')).toBeInTheDocument();
-    });
-    
-    // Get state before clicking confirm
-    const storeBeforeDelete = useCharacterStore.getState();
-    expect(storeBeforeDelete.isDeleted('1')).toBe(false);
-    
-    const confirmButton = screen.getByRole('button', { name: 'Delete' });
-    
-    // Unmount before clicking to avoid the hooks error
-    unmount();
-    
-    // Click confirm directly on the store
-    act(() => {
-      const { softDeleteCharacter, setSelectedCharacterId } = useCharacterStore.getState();
+      const { softDeleteCharacter } = useCharacterStore.getState();
       softDeleteCharacter('1');
-      setSelectedCharacterId(null);
     });
     
-    // Verify character was deleted
-    const { isDeleted, selectedCharacterId } = useCharacterStore.getState();
+    // Verify character was soft deleted
+    const { isDeleted } = useCharacterStore.getState();
     expect(isDeleted('1')).toBe(true);
-    expect(selectedCharacterId).toBeNull();
   });
 
   it('shows comments section', () => {

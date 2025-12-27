@@ -63,8 +63,9 @@ export const CharacterDetail = memo(function CharacterDetail({ characterId: prop
 
   if (error || !character) {
     return (
-      <div className="flex items-center justify-center h-full text-red-500">
-        Error loading character details
+      <div className="flex flex-col items-center justify-center h-full text-gray-500 p-6">
+        <p className="text-lg font-semibold mb-2">Character not found</p>
+        <p className="text-sm text-gray-400">Please select another character</p>
       </div>
     );
   }
