@@ -7,11 +7,13 @@ import { CharacterFilters } from './CharacterFilters';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { useCharacterStore } from '@/store/useCharacterStore';
 import { useCharacters } from '@/hooks/useCharacters';
+import { Icon } from '@iconify/react';
 
 export const CharacterList = memo(function CharacterList() {
   const { 
     filters, 
     setSearch, 
+    setSortOrder,
     selectedCharacterId, 
     setSelectedCharacterId,
     isFilterPanelOpen,
@@ -51,6 +53,10 @@ export const CharacterList = memo(function CharacterList() {
     setSelectedCharacterId(id);
   }, [setSelectedCharacterId]);
 
+  const handleSortToggle = useCallback(() => {
+    setSortOrder(filters.sortOrder === 'asc' ? 'desc' : 'asc');
+  }, [filters.sortOrder, setSortOrder]);
+
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (filters.characterFilter !== 'all') count++;
@@ -74,13 +80,32 @@ export const CharacterList = memo(function CharacterList() {
       <div className="px-4 py-5 lg:px-6 lg:py-6 border-b border-gray-100">
         <h1 className="text-2xl lg:text-xl font-bold text-gray-900 mb-4 lg:mb-5">Rick and Morty list</h1>
         
-        {/* Search Input */}
-        <SearchInput
-          value={filters.search}
-          onChange={setSearch}
-          onFilterClick={toggleFilterPanel}
-          isFilterActive={isFilterPanelOpen || activeFilterCount > 0}
-        />
+        {/* Search Input and Sort Button */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <SearchInput
+              value={filters.search}
+              onChange={setSearch}
+              onFilterClick={toggleFilterPanel}
+              isFilterActive={isFilterPanelOpen || activeFilterCount > 0}
+            />
+          </div>
+          
+          {/* Sort Button */}
+          <button
+            onClick={handleSortToggle}
+            className="flex items-center gap-1.5 px-3 py-3 rounded-lg border border-gray-200 hover:border-[var(--primary-500)] hover:bg-[var(--primary-50)] transition-colors group"
+            aria-label={`Ordenar ${filters.sortOrder === 'asc' ? 'descendente' : 'ascendente'}`}
+          >
+            <Icon 
+              icon={filters.sortOrder === 'asc' ? 'mdi:sort-alphabetical-ascending' : 'mdi:sort-alphabetical-descending'} 
+              className="w-5 h-5 text-gray-500 group-hover:text-[var(--primary-600)]"
+            />
+            <span className="text-sm font-medium text-gray-700 group-hover:text-[var(--primary-600)] whitespace-nowrap">
+              {filters.sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
+            </span>
+          </button>
+        </div>
 
         {/* Filters Panel */}
         <CharacterFilters />
